@@ -2963,7 +2963,7 @@ decamelize@^1.1.1, decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
 
-deck.gl@^7.1.5:
+deck.gl@7.1.5:
   version "7.1.5"
   resolved "https://registry.yarnpkg.com/deck.gl/-/deck.gl-7.1.5.tgz#2a0ed1eb70144115d3ef9518c93ed3e8691b0e9c"
   integrity sha512-bhAu4BNxtBhX7I+hGXV0GS1e2JmYrWUGl3GYZ6knbsbNlZW0HLe9X74+hfuzH2wSfO2LjsTT8K2/JSU4qQNgGA==
@@ -5703,7 +5703,7 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-luma.gl@^7.1.1:
+luma.gl@7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/luma.gl/-/luma.gl-7.1.1.tgz#e70afa5767ab33ed7b804ff8f9648d39d324d05b"
   integrity sha512-WPknedrcIBT2vh7mk/U5kGzWrXsRFXj+tZWffLW8eAEqDtyazNbcvoqExJqMfmdQtb6eWGPHHAMp+4uQx+1VcQ==
