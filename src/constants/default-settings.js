@@ -646,7 +646,8 @@ export const EXPORT_DATA_TYPE_OPTIONS = [
 
 // Export map types
 export const EXPORT_MAP_FORMAT = keyMirror({
-  HTML: null,
+  // Disable for airgapped networks:
+  // HTML: null,
   JSON: null
 });
 
