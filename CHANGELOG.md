@@ -15,9 +15,27 @@ Each version should:
 Ref: http://keepachangelog.com/en/0.3.0/
 -->
 
+#### [1.1.6] - Sep 5 2019
+- [Bug] Upgrade to deck 7.1.11 (#715)
+
+#### [1.1.5] - Sep 4 2019
+- [Bug] Unlock luma.gl version (#713)
+- [Bug] fix heatmap getBounds (#711)
+- [Feat] HTML Export: provide read only mode (#709)
+
+#### [1.1.4] - Sep 3 2019
+- [Bug] Lock deck.gl to version 7.1.5 (#688)
+- [Enhancement] add keepExistingConfig option to addDataToMap (#619)
+- [Bug] Fixed issue with geojson fields (#683)
+- [Enhancement] Switch from callback refs to createRef (#622)
+- [Bug] Fix uglify error compiling dom-to-image in prod (#682)
+- [Enhancement] pass set useDevicePixels to deck.gl to plot container (#663)
+- [jupyter] Upgrade to kepler.gl v1.1.3 (#660)
+- [Chore] use xvfb as a service in travis-ci (#669)
+
 #### [1.1.3] - Aug 5 2019
-642c646 [Enhancement] Use preserved state to apply keplerGlInit. when mint=false (#649)
-96b889e [Enhancement] Replace react-data-grid with react-virtualized (#629)
+- [Enhancement] Use preserved state to apply keplerGlInit. when mint=false (#649)
+- [Enhancement] Replace react-data-grid with react-virtualized (#629)
 
 #### [1.1.2] - Aug 1 2019
 - [Bug] Fix issue in Layer.registerVisConfig preventing custom boolean properties
