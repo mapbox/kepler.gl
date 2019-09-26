@@ -23,14 +23,16 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {format} from 'd3-format';
 
-import {Icons} from '../../';
-
 const numFormat = format(',');
 
 const propTypes = {
-  // sampleData: PropTypes.object.isRequired,
-  // onLoadSample: PropTypes.func.isRequired,
-  // back: PropTypes.func.isRequired
+  sampleData: PropTypes.object.isRequired,
+  onLoadSample: PropTypes.func.isRequired,
+  back: PropTypes.func.isRequired,
+  dataSamples: PropTypes.arrayOf.isRequired,
+  onSampleSelect: PropTypes.func.isRequired,
+  error: PropTypes.object,
+  setIsLoading: PropTypes.func.isRequired
 };
 
 const StyledSampleGallery = styled.div`
@@ -80,26 +82,6 @@ const StyledSampleMap = styled.div`
   }
 `;
 
-const BackLink = styled.div`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
-  color: ${props => props.theme.titleColorLT};
-  cursor: pointer;
-  margin-bottom: 40px;
-
-  :hover {
-    font-weight: 500;
-  }
-
-  span {
-    white-space: nowrap;
-  }
-  svg {
-    margin-right: 10px;
-  }
-`;
-
 const StyledImageCaption = styled.div`
   color: ${props => props.theme.labelColorLT};
   font-size: 11px;
@@ -133,7 +115,6 @@ const SampleMap = ({sample, onClick}) => (
 const SampleMapGallery = ({
   dataSamples = [],
   onSampleSelect,
-  back,
   error,
   setIsLoading
 }) => {

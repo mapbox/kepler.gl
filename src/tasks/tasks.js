@@ -19,8 +19,7 @@
 // THE SOFTWARE.
 
 import {taskCreator} from 'react-palm/tasks';
-import {json as requestJson, csv as requestCsv} from 'd3-request';
-import {processCsvData} from '../processors/data-processor';
+import {json as requestJson} from 'd3-request';
 import {loadCsv} from '../processors/file-handler';
 
 export const LOAD_FILE_TASK = taskCreator(
@@ -66,9 +65,7 @@ export const LOAD_SAMPLE_CONFIG_TASK = taskCreator(
 export const LOAD_SAMPLE_DATA_TASK = taskCreator(
   async ({dataUrl, id, label}, success, error) => {
     const blob = await fetch(dataUrl).then(r => r.blob());
-    console.log(`|||blob`, blob);
     const csv = await loadCsv(blob);
-    console.log(`|||csv`, csv);
     success({
       id,
       datasets: {
@@ -77,19 +74,6 @@ export const LOAD_SAMPLE_DATA_TASK = taskCreator(
       }
     });
   },
-  // requestCsv(dataUrl, (err, result) => {
-  //   if (err) {
-  //     error(err);
-  //   } else {
-  //     if (!result) {
-  //       error(new Error('Map data response is empty'));
-  //     }
-  //     // const csv = processCsvData(result);
-  //     console.log(`|||csv`, csv);
-  //     success({id, datasets: result});
-  //   }
-  // }),
-
   'LOAD_SAMPLE_DATA_TASK'
 );
 

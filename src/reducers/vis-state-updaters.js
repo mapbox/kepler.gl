@@ -1175,7 +1175,6 @@ export const loadFilesUpdater = (state, action) => {
   const {files} = action;
 
   const filesToLoad = files.map(fileBlob => processFileToLoad(fileBlob));
-  console.log(`|||files`, files);
   // reader -> parser -> augment -> receiveVisData
   const loadFileTasks = [
     Task.all(filesToLoad.map(LOAD_FILE_TASK)).bimap(

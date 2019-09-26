@@ -147,7 +147,9 @@ const TABS = {
   UPLOAD: {
     id: 'UPLOAD',
     label: 'Upload data',
-    component: props => <FileUpload {...props} />
+    component: function UploadTab(props) {
+      return <FileUpload {...props} />;
+    }
   },
   SAMPLE: {
     id: 'SAMPLE',
@@ -163,7 +165,9 @@ const TABS = {
         </div>
       </StyledTrySampleData>
     ),
-    component: props => <SampleMapGallery {...props} />
+    component: function SampleTab(props) {
+      return <SampleMapGallery {...props} />;
+    }
   }
 };
 
