@@ -46,7 +46,7 @@ export const toggleSidePanel = createAction(
  * @public
  */
 export const toggleModal = createAction(
-  ActionTypes.TOGGLE_MODAL,
+  ActionTypes.TOGGLE_MODAL, 
   id => id
 );
 
@@ -121,7 +121,7 @@ export const removeNotification = createAction(
  * @public
  */
 export const setRatio = createAction(
-  ActionTypes.SET_RATIO,
+  ActionTypes.SET_RATIO, 
   ratio => ratio
 );
 
@@ -250,6 +250,11 @@ export const setExportMapFormat = createAction(
 export const setExportHTMLMapMode = createAction(
   ActionTypes.SET_EXPORT_MAP_HTML_MODE,
   payload => payload
+);
+
+export const loadMapSampleFile = createAction(
+  ActionTypes.LOAD_MAP_SAMPLE_FILE,
+  samples => samples
 );
 
 /**

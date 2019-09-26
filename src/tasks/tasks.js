@@ -19,7 +19,9 @@
 // THE SOFTWARE.
 
 import {taskCreator} from 'react-palm/tasks';
-import {json as requestJson} from 'd3-request';
+import {json as requestJson, csv as requestCsv} from 'd3-request';
+import {processCsvData} from '../processors/data-processor';
+import {loadCsv} from '../processors/file-handler';
 
 export const LOAD_FILE_TASK = taskCreator(
   ({fileBlob, info, handler, processor}, success, error) =>
@@ -34,7 +36,8 @@ export const LOAD_FILE_TASK = taskCreator(
           // result has both datasets and info
           // TODO: I think we should pass info to the handler and return
           // the same format back from the file handler
-          if (result.datasets) { // this is coming from parsing keplergl.json file
+          if (result.datasets) {
+            // this is coming from parsing keplergl.json file
             success(result); // info is already part of datasets
           }
           success({datasets: {data: result, info}});
@@ -43,6 +46,51 @@ export const LOAD_FILE_TASK = taskCreator(
       .catch(err => error(err)),
 
   'LOAD_FILE_TASK'
+);
+
+export const LOAD_SAMPLE_CONFIG_TASK = taskCreator(
+  ({configUrl, id}, success, error) =>
+    requestJson(configUrl, (err, result) => {
+      if (err) {
+        error(err);
+      } else {
+        if (!result) {
+          error(new Error('Map config response is empty'));
+        }
+        success({id, style: result});
+      }
+    }),
+
+  'LOAD_SAMPLE_CONFIG_TASK'
+);
+export const LOAD_SAMPLE_DATA_TASK = taskCreator(
+  async ({dataUrl, id, label}, success, error) => {
+    const blob = await fetch(dataUrl).then(r => r.blob());
+    console.log(`|||blob`, blob);
+    const csv = await loadCsv(blob);
+    console.log(`|||csv`, csv);
+    success({
+      id,
+      datasets: {
+        data: csv,
+        info: {id, size: blob.size, name: label}
+      }
+    });
+  },
+  // requestCsv(dataUrl, (err, result) => {
+  //   if (err) {
+  //     error(err);
+  //   } else {
+  //     if (!result) {
+  //       error(new Error('Map data response is empty'));
+  //     }
+  //     // const csv = processCsvData(result);
+  //     console.log(`|||csv`, csv);
+  //     success({id, datasets: result});
+  //   }
+  // }),
+
+  'LOAD_SAMPLE_DATA_TASK'
 );
 
 export const LOAD_MAP_STYLE_TASK = taskCreator(
@@ -54,7 +102,7 @@ export const LOAD_MAP_STYLE_TASK = taskCreator(
         if (!result) {
           error(new Error('Map style response is empty'));
         }
-        success({id, style: result})
+        success({id, style: result});
       }
     }),
 

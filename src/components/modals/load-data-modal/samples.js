@@ -1,0 +1,146 @@
+export const samples = [
+  {
+    id: 'earthquakes',
+    label: 'California Earthquakes',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/earthquakes.png',
+    description:
+      'Location, maginitude and magtype of 2.5+ magnitude earthquakes in california.',
+    size: 54936,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/earthquakes/data.csv',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/earthquakes/config.json'
+  },
+  {
+    id: 'nyctrips',
+    label: 'NYC taxi trips',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/nyctrips.png',
+    description:
+      'A small sample of yellow and green taxi trip records in New York City.',
+    size: 97986,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/nyctrips/data.csv',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/nyctrips/config.json'
+  },
+  {
+    id: 'sfcontour',
+    label: 'San Francisco elevation contours',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/sfcontour.png',
+    description:
+      'Elevation contours of San Francisco mainland and Treasure Island/Yerba Island.',
+    size: 13598,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/sfcontour/data.json',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/sfcontour/config.json'
+  },
+  {
+    id: 'nyc_census',
+    label: 'New york city population by census tract',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/nyc_census.png',
+    description:
+      'This dataset contains the 2010 Census tract population data of NYC.',
+    size: 2166,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/nyc_census/data.json',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/nyc_census/config.json'
+  },
+  {
+    id: 'sftrees',
+    label: 'San Francisco street tree map',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/sftrees.png',
+    description:
+      'A 3d hexbin density map showing every single streets in San Francisco',
+    size: 65499,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/sftrees/data.csv',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/sftrees/config.json'
+  },
+  {
+    id: 'ukcommute',
+    label: 'Commute pattern in England and Wales',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/ukcommute.png',
+    description:
+      'A origin destination map using 3d arcs to show commute patterns of England and Wales residence',
+    size: 679643,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/ukcommute/data.csv',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/ukcommute/config.json'
+  },
+  {
+    id: 'la_assessorparcels',
+    label: '$2+ million homes built in Los Angeles since 2006',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/la_assessorparcels.png',
+    description:
+      'Map showing new homes valued over $2,000,000 built in Los Angeles county since 2006',
+    size: 284554,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/la_assessorparcels/data.csv',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/la_assessorparcels/config.json'
+  },
+  {
+    id: 'movement_pittsburgh',
+    label: 'Travel Times from Uber Movement',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/movement-pittsburgh.png',
+    description:
+      'Pittsburgh travel times before and during heavy inclement weather conditions',
+    size: 793,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/movement_pittsburgh/data.csv',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/movement_pittsburgh/config.json'
+  },
+  {
+    id: 'county_unemployment',
+    label: '2017 Unemployment Rates for U.S. Counties',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/sample/counties-unemployment.png',
+    description: '2017 Labor force information for U.S. Counties',
+    size: 3220,
+    visible: true,
+    dataUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/data.geojson',
+    configUrl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/config.json'
+  },
+  {
+    id: 'usdot',
+    label: '2018 Uber USDOT',
+    queryType: 'sample',
+    imageUrl:
+      'https://s3.amazonaws.com/uber-static/kepler.gl/usdot/counties-unemployment.png',
+    description: '2017 Labor force information for U.S. Counties',
+    visible: false,
+    keplergl:
+      'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/usdot/keplergl.json'
+  }
+];

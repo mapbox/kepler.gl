@@ -88,6 +88,7 @@ const ActionTypes = keyMirror({
   SET_FILTER_PLOT: null,
   LOAD_FILES: null,
   LOAD_FILES_ERR: null,
+  LOAD_SAMPLE: null,
 
   // mapState
   UPDATE_MAP: null,
@@ -142,7 +143,8 @@ const ActionTypes = keyMirror({
   INIT: null,
   ADD_DATA_TO_MAP: null,
   RECEIVE_MAP_CONFIG: null,
-  RESET_MAP_CONFIG: null
+  RESET_MAP_CONFIG: null,
+  LOAD_MAP_SAMPLE_FILE: null
 });
 
 const addPrefix = actions =>

@@ -434,6 +434,13 @@ export function loadFiles(files) {
   };
 }
 
+export function loadSample(sample) {
+  return {
+    type: ActionTypes.LOAD_SAMPLE,
+    sample
+  };
+}
+
 /**
  * Trigger loading file error
  * @memberof visStateActions
