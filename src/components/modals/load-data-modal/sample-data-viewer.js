@@ -26,10 +26,7 @@ import {format} from 'd3-format';
 const numFormat = format(',');
 
 const propTypes = {
-  sampleData: PropTypes.object.isRequired,
-  onLoadSample: PropTypes.func.isRequired,
-  back: PropTypes.func.isRequired,
-  dataSamples: PropTypes.arrayOf.isRequired,
+  dataSamples: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSampleSelect: PropTypes.func.isRequired,
   error: PropTypes.object,
   setIsLoading: PropTypes.func.isRequired

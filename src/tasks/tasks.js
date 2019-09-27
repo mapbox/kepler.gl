@@ -20,7 +20,6 @@
 
 import {taskCreator} from 'react-palm/tasks';
 import {json as requestJson} from 'd3-request';
-import {loadCsv} from '../processors/file-handler';
 
 export const LOAD_FILE_TASK = taskCreator(
   ({fileBlob, info, handler, processor}, success, error) =>
@@ -47,34 +46,20 @@ export const LOAD_FILE_TASK = taskCreator(
   'LOAD_FILE_TASK'
 );
 
-export const LOAD_SAMPLE_CONFIG_TASK = taskCreator(
-  ({configUrl, id}, success, error) =>
-    requestJson(configUrl, (err, result) => {
+export const LOAD_SAMPLE_FULL_DATA_TASK = taskCreator(
+  ({fullUrl, id}, success, error) =>
+    requestJson(fullUrl, (err, result) => {
       if (err) {
         error(err);
       } else {
         if (!result) {
           error(new Error('Map config response is empty'));
         }
-        success({id, style: result});
+        success({id, result});
       }
     }),
 
-  'LOAD_SAMPLE_CONFIG_TASK'
-);
-export const LOAD_SAMPLE_DATA_TASK = taskCreator(
-  async ({dataUrl, id, label}, success, error) => {
-    const blob = await fetch(dataUrl).then(r => r.blob());
-    const csv = await loadCsv(blob);
-    success({
-      id,
-      datasets: {
-        data: csv,
-        info: {id, size: blob.size, name: label}
-      }
-    });
-  },
-  'LOAD_SAMPLE_DATA_TASK'
+  'LOAD_SAMPLE_FULL_DATA_TASK'
 );
 
 export const LOAD_MAP_STYLE_TASK = taskCreator(

@@ -23,11 +23,7 @@ import Task, {disableStackCapturing, withTask} from 'react-palm/tasks';
 import cloneDeep from 'lodash.clonedeep';
 
 // Tasks
-import {
-  LOAD_FILE_TASK,
-  LOAD_SAMPLE_CONFIG_TASK,
-  LOAD_SAMPLE_DATA_TASK
-} from 'tasks/tasks';
+import {LOAD_FILE_TASK, LOAD_SAMPLE_FULL_DATA_TASK} from 'tasks/tasks';
 
 // Actions
 import {loadFilesErr} from 'actions/vis-state-actions';
@@ -1209,17 +1205,34 @@ export const loadFilesUpdater = (state, action) => {
 
 export const loadSampleUpdater = (state, {sample}) => {
   const loadFileTasks = [
-    Task.all([
-      LOAD_SAMPLE_CONFIG_TASK(sample),
-      LOAD_SAMPLE_DATA_TASK(sample)
-    ]).bimap(
+    Task.all([LOAD_SAMPLE_FULL_DATA_TASK(sample)]).bimap(
       results => {
-        const data = results.reduce((a, b) => Object.assign(b, a), {});
-        const result = {
-          config: data.style.config,
-          datasets: data.datasets
+        const data = {
+          datasets: [
+            {
+              data: {
+                fields: results[0].result.datasets[0].data.fields,
+                rows: results[0].result.datasets[0].data.allData
+              },
+              info: {
+                id: results[0].result.datasets[0].data.id,
+                label: results[0].result.datasets[0].data.label,
+                color: results[0].result.datasets[0].data.color
+              }
+            }
+          ],
+          config: results[0].result.config.config,
+          options: {centerMap: true}
         };
-        return addDataToMap(result);
+
+        // for some reason, the `visualChannels` key doesn't end up where it's
+        // supposed to be so we need to manually move it. Unsure why this is happening
+        Object.assign(
+          data.config.visState.layers[0].config,
+          data.config.visState.layers[0].visualChannels
+        );
+        delete data.config.visState.layers[0].visualChannels;
+        return addDataToMap(data);
       },
       error => loadFilesErr(error)
     )

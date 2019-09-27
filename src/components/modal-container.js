@@ -111,7 +111,7 @@ export default function ModalContainerFactory(
       visStateActions: PropTypes.object.isRequired,
       uiStateActions: PropTypes.object.isRequired,
       mapStyleActions: PropTypes.object.isRequired,
-      dataSamples: PropTypes.Array
+      dataSamples: PropTypes.arrayOf(PropTypes.object)
     };
 
     _closeModal = () => {
