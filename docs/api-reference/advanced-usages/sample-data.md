@@ -2,7 +2,11 @@
 
 The KeplerGL component accepts an optional parameter `dataSamples`, which looks like the following:
 
+<<<<<<< HEAD
 ```js
+=======
+```json
+>>>>>>> 4370e25b74a92993924318101ef9fe89b99a95cc
 const dataSamples = [
   {
     id: 'nyctrips', // needs to match the id in the fullUrl json object
