@@ -50,10 +50,12 @@ function LayerPanelFactory(LayerConfigurator) {
       openModal: PropTypes.func.isRequired,
       removeLayer: PropTypes.func.isRequired,
       onCloseConfig: PropTypes.func,
-
       layerTypeOptions: PropTypes.arrayOf(PropTypes.any),
-      layerVisConfigChange: PropTypes.func,
-      layerVisualChannelConfigChange: PropTypes.func
+      layerVisConfigChange: PropTypes.func.isRequired,
+      layerVisualChannelConfigChange: PropTypes.func.isRequired,
+      layerColorUIChange: PropTypes.func.isRequired,
+      updateAnimationTime: PropTypes.func,
+      updateLayerAnimationSpeed: PropTypes.func
     };
 
     updateLayerConfig = newProp => {
@@ -66,6 +68,10 @@ function LayerPanelFactory(LayerConfigurator) {
 
     updateLayerVisConfig = newVisConfig => {
       this.props.layerVisConfigChange(this.props.layer, newVisConfig);
+    };
+
+    updateLayerColorUI = (...args) => {
+      this.props.layerColorUIChange(this.props.layer, ...args);
     };
 
     updateLayerTextLabel = (...args) => {
@@ -83,7 +89,7 @@ function LayerPanelFactory(LayerConfigurator) {
 
     _updateLayerLabel = ({target: {value}}) => {
       this.updateLayerConfig({label: value});
-    };
+    }
 
     _toggleVisibility = e => {
       e.stopPropagation();
@@ -93,7 +99,11 @@ function LayerPanelFactory(LayerConfigurator) {
 
     _toggleEnableConfig = e => {
       e.stopPropagation();
-      const {layer: {config: {isConfigActive}}} = this.props;
+      const {
+        layer: {
+          config: {isConfigActive}
+        }
+      } = this.props;
       this.updateLayerConfig({isConfigActive: !isConfigActive});
     };
 
@@ -134,6 +144,7 @@ function LayerPanelFactory(LayerConfigurator) {
               datasets={datasets}
               layerTypeOptions={layerTypeOptions}
               openModal={this.props.openModal}
+              updateLayerColorUI={this.updateLayerColorUI}
               updateLayerConfig={this.updateLayerConfig}
               updateLayerVisualChannelConfig={this.updateLayerVisualChannelConfig}
               updateLayerType={this.updateLayerType}

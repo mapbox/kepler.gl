@@ -32,6 +32,10 @@ export const borderColor = '#3A414C';
 export const borderColorLight = '#F1F1F1';
 
 // TEXT
+export const fontFamily = `ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif`;
+export const fontWeight = 400;
+export const fontSize = '0.875em';
+export const lineHeight = 1.71429;
 export const labelColor = '#6A7485';
 export const labelHoverColor = '#C6C6C6';
 export const labelColorLT = '#6A7485';
@@ -45,7 +49,7 @@ export const subtextColorLT = '#A0A7B4';
 export const subtextColorActive = '#FFFFFF';
 
 export const titleTextColor = '#FFFFFF';
-export const textColorHl = '#D3D8E0';
+export const textColorHl = '#F0F0F0';
 export const textColorHlLT = '#F1F1F1';
 export const activeColor = '#1FBAD6';
 export const activeColorHover = '#108188';
@@ -79,8 +83,13 @@ export const negativeBtnActColor = '#FFFFFF';
 
 // Input
 export const inputBoxHeight = '34px';
+export const inputBoxHeightSmall = '24px';
+export const inputBoxHeightTiny = '18px';
 export const inputPadding = '4px 10px';
+export const inputPaddingSmall = '4px 6px';
+export const inputPaddingTiny = '2px 4px';
 export const inputFontSize = '11px';
+export const inputFontSizeSmall = '10px';
 export const inputFontWeight = 500;
 export const inputBgd = '#29323C';
 export const inputBgdHover = '#3A414C';
@@ -93,7 +102,6 @@ export const inputBorderRadius = '1px';
 export const inputPlaceholderColor = '#6A7485';
 export const inputPlaceholderFontWeight = 400;
 
-export const secondaryInputHeight = '28px';
 export const secondaryInputBgd = '#242730';
 export const secondaryInputBgdHover = '#3A414C';
 export const secondaryInputBgdActive = '#3A414C';
@@ -124,7 +132,7 @@ export const dropdownListHighlightBg = '#6A7485';
 export const dropdownListShadow = '0 6px 12px 0 rgba(0,0,0,0.16)';
 export const dropdownListBgd = '#3A414C';
 export const dropdownListBorderTop = '#242730';
-
+export const dropdownWrapperZ = 100;
 // Switch
 export const switchWidth = 24;
 export const switchHeight = 12;
@@ -155,7 +163,10 @@ export const checkboxBoxBgdChecked = primaryBtnBgd;
 
 // Side Panel
 export const sidePanelHeaderBg = '#29323C';
+export const sidePanelInnerPadding = 16;
 export const sidePanelBg = '#242730';
+export const sidePanelScrollBarWidth = 10;
+export const sidePanelScrollBarHeight = 10;
 export const sideBarCloseBtnBgd = secondaryBtnBgd;
 export const sideBarCloseBtnColor = '#29323C';
 export const sideBarCloseBtnBgdHover = secondaryBtnActBgd;
@@ -180,6 +191,11 @@ export const mapPanelHeaderBackgroundColor = '#29323C';
 export const tooltipBg = '#F8F8F9';
 export const tooltipColor = '#333334';
 
+// Bottom Panel
+export const bottomInnerPdSide = 32;
+export const bottomInnerPdVert = 6;
+export const bottomPanelGap = 20;
+
 // Modal
 export const modalTitleColor = '#3A414C';
 export const modalTitleFontSize = '24px';
@@ -189,6 +205,13 @@ export const modalImagePlaceHolder = '#DDDFE3';
 export const modalPadding = '10px 0';
 export const modalLateralPadding = '72px';
 export const modalPortableLateralPadding = '36px';
+
+export const modalOverLayZ = 1000;
+export const modalOverlayBgd = 'rgba(0, 0, 0, 0.5)';
+export const modalContentZ = 10002;
+export const modalFooterZ = 10001;
+export const modalTitleZ = 10003;
+export const modalButtonZ = 10005;
 
 // Modal Dialog (Dark)
 export const modalDialogBgd = '#3A414C';
@@ -206,7 +229,9 @@ export const sliderHandleColor = '#D3D8E0';
 export const sliderHandleHoverColor = '#FFFFFF';
 export const sliderHandleShadow = '0 2px 4px 0 rgba(0,0,0,0.40)';
 export const sliderInputHeight = 24;
-export const sliderInputWidth = 50;
+export const sliderInputWidth = 56;
+export const sliderMarginTopIsRange = 0;
+export const sliderMarginTop = 12;
 
 // Plot
 export const rangeBrushBgd = '#3A414C';
@@ -234,6 +259,13 @@ const extendColumnWidth = 2 * columnWidth;
 const gridDefaultWidth = 800;
 const gridDefaultHeight = 600;
 
+// Floating Time display
+const timeDisplayBorderRadius = 32;
+const timeDisplayHeight = 64;
+const timeDisplayMinWidth = 176;
+const timeDisplayOpacity = 0.8;
+const timeDisplayPadding = '0 24px';
+
 export const textTruncate = {
   maxWidth: '100%',
   overflow: 'hidden',
@@ -259,18 +291,33 @@ const input = css`
     ${props =>
       props.active
         ? props.theme.inputBorderActiveColor
-        : props.error ? props.theme.errorColor : props.theme.inputBgd};
+        : props.error
+        ? props.theme.errorColor
+        : props.theme.inputBgd};
   border-radius: 2px;
   caret-color: ${props => props.theme.inputBorderActiveColor};
   color: ${props => props.theme.inputColor};
   display: flex;
-  font-size: ${props => props.theme.inputFontSize};
+  font-size: ${props =>
+    ['small', 'tiny'].includes(props.size)
+      ? props.theme.inputFontSizeSmall
+      : props.theme.inputFontSize};
   font-weight: ${props => props.theme.inputFontWeight};
-  height: ${props => props.theme.inputBoxHeight};
+  height: ${props =>
+    props.size === 'small'
+      ? props.theme.inputBoxHeightSmall
+      : props.size === 'tiny'
+      ? props.theme.inputBoxHeightTiny
+      : props.theme.inputBoxHeight};
   justify-content: space-between;
   outline: none;
   overflow: hidden;
-  padding: ${props => props.theme.inputPadding};
+  padding: ${props =>
+    props.size === 'small'
+      ? props.theme.inputPaddingSmall
+      : props.size === 'tiny'
+      ? props.theme.inputPaddingTiny
+      : props.theme.inputPadding};
   text-overflow: ellipsis;
   transition: ${props => props.theme.transition};
   white-space: nowrap;
@@ -280,7 +327,7 @@ const input = css`
   opacity: ${props => (props.disabled ? 0.5 : 1)};
 
   :hover {
-    cursor: ${props => props.type === 'number' ? 'text' : 'pointer'};
+    cursor: ${props => (props.type === 'number' ? 'text' : 'pointer')};
     background-color: ${props =>
       props.active ? props.theme.inputBgdActive : props.theme.inputBgdHover};
     border-color: ${props =>
@@ -339,11 +386,10 @@ const inputLT = css`
 
   :hover {
     background-color: ${props => props.theme.selectBackgroundLT};
-    cursor: ${props => ['number', 'text'].includes(props.type) ? 'text' : 'pointer'};
+    cursor: ${props =>
+      ['number', 'text'].includes(props.type) ? 'text' : 'pointer'};
     border-color: ${props =>
-    props.active
-      ? props.theme.textColorLT
-      : props.theme.subtextColor};
+      props.active ? props.theme.textColorLT : props.theme.subtextColor};
   }
 `;
 
@@ -351,11 +397,9 @@ const secondaryInput = css`
   ${props => props.theme.input}
   color: ${props => props.theme.secondaryInputColor};
   background-color: ${props => props.theme.secondaryInputBgd};
-  height: ${props => props.theme.secondaryInputHeight};
   border: 1px solid
-    ${props => props.error
-          ? props.theme.errorColor
-          : props.theme.secondaryInputBorderColor};
+    ${props =>
+      props.error ? props.theme.errorColor : props.theme.secondaryInputBorderColor};
 
   :hover {
     cursor: pointer;
@@ -424,9 +468,7 @@ const inlineInput = css`
 
 const switchTrack = css`
   background: ${props =>
-    props.checked
-      ? props.theme.switchTrackBgdActive
-      : props.theme.switchTrackBgd};
+    props.checked ? props.theme.switchTrackBgdActive : props.theme.switchTrackBgd};
   position: absolute;
   top: 0;
   left: ${props => -props.theme.switchLabelMargin}px;
@@ -441,13 +483,15 @@ const switchButton = css`
   transition: ${props => props.theme.transition};
   position: absolute;
   top: 0;
-  left: ${props => (props.checked ? props.theme.switchWidth / 2 : -1) - props.theme.switchLabelMargin}px;
+  left: ${props =>
+    (props.checked ? props.theme.switchWidth / 2 : -1) -
+    props.theme.switchLabelMargin}px;
   content: '';
   display: block;
   height: ${props => props.theme.switchBtnHeight};
   width: ${props => props.theme.switchBtnWidth};
-  background: ${props => props.checked ?
-  props.theme.switchBtnBgdActive : props.theme.switchBtnBgd};
+  background: ${props =>
+    props.checked ? props.theme.switchBtnBgdActive : props.theme.switchBtnBgd};
   box-shadow: ${props => props.theme.switchBtnBoxShadow};
 `;
 
@@ -482,8 +526,13 @@ const checkboxBox = css`
   left: 0;
   width: ${props => props.theme.checkboxWidth}px;
   height: ${props => props.theme.checkboxHeight}px;
-  background: ${props => props.checked ? props.theme.checkboxBoxBgdChecked : props.theme.checkboxBoxBgd};
-  border: 1px solid ${props => props.checked ? props.theme.checkboxBoxBgdChecked : props.theme.checkboxBorderColor};
+  background: ${props =>
+    props.checked ? props.theme.checkboxBoxBgdChecked : props.theme.checkboxBoxBgd};
+  border: 1px solid
+    ${props =>
+      props.checked
+        ? props.theme.checkboxBoxBgdChecked
+        : props.theme.checkboxBorderColor};
   border-radius: 2px;
   content: '';
 `;
@@ -498,8 +547,8 @@ const checkboxCheck = css`
   transform: rotate(-45deg);
   display: block;
   position: absolute;
-  opacity: ${props => props.checked ? 1 : 0};
-  content: "";
+  opacity: ${props => (props.checked ? 1 : 0)};
+  content: '';
 `;
 
 const inputCheckbox = css`
@@ -515,7 +564,7 @@ const inputCheckbox = css`
   margin-left: -${props => props.theme.switchLabelMargin}px;
 
   :before {
-     ${props => props.theme.checkboxBox};
+    ${props => props.theme.checkboxBox};
   }
 
   :after {
@@ -527,16 +576,17 @@ const secondarySwitch = css`
   ${props => props.theme.inputSwitch}
   :before {
     ${props => props.theme.switchTrack} background: ${props =>
-        props.checked
-          ? props.theme.switchTrackBgdActive
-          : props.theme.secondarySwitchTrackBgd};
+  props.checked
+    ? props.theme.switchTrackBgdActive
+    : props.theme.secondarySwitchTrackBgd};
   }
 
   :after {
     ${props => props.theme.switchButton}
-    background: ${props => props.checked
-          ? props.theme.switchBtnBgdActive
-          : props.theme.secondarySwitchBtnBgd};
+    background: ${props =>
+      props.checked
+        ? props.theme.switchBtnBgdActive
+        : props.theme.secondarySwitchBtnBgd};
   }
 `;
 
@@ -625,8 +675,8 @@ const dropdownList = css`
 
 const sidePanelScrollBar = css`
   ::-webkit-scrollbar {
-    height: 10px;
-    width: 10px;
+    height: ${props => props.theme.sidePanelScrollBarHeight}px;
+    width: ${props => props.theme.sidePanelScrollBarWidth}px;
   }
 
   ::-webkit-scrollbar-corner {
@@ -671,7 +721,7 @@ const panelDropdownScrollBar = css`
       background: ${props => props.theme.labelColor};
       cursor: pointer;
     }
-  };
+  }
 `;
 
 const scrollBar = css`
@@ -758,6 +808,7 @@ export const theme = {
   dropdownListHeader,
   dropdownListSection,
   dropdownListShadow,
+  dropdownWrapperZ,
   modalScrollBar,
   scrollBar,
   sidePanelScrollBar,
@@ -812,13 +863,18 @@ export const theme = {
   inputBgdHover,
   inputBgdActive,
   inputBoxHeight,
+  inputBoxHeightSmall,
+  inputBoxHeightTiny,
   inputBorderColor,
   inputBorderActiveColor,
   inputBorderHoverColor,
   inputBorderRadius,
   inputColor,
   inputPadding,
+  inputPaddingSmall,
+  inputPaddingTiny,
   inputFontSize,
+  inputFontSizeSmall,
   inputFontWeight,
   inputPlaceholderColor,
   inputPlaceholderFontWeight,
@@ -826,7 +882,6 @@ export const theme = {
   secondaryInputBgd,
   secondaryInputBgdHover,
   secondaryInputBgdActive,
-  secondaryInputHeight,
   secondaryInputColor,
   secondaryInputBorderColor,
   secondaryInputBorderActiveColor,
@@ -896,14 +951,22 @@ export const theme = {
 
   modalLateralPadding,
   modalPortableLateralPadding,
+  modalOverLayZ,
+  modalOverlayBgd,
+  modalContentZ,
+  modalFooterZ,
+  modalTitleZ,
+  modalButtonZ,
 
   // Side Panel
   sidePanelBg,
-
+  sidePanelInnerPadding,
   sideBarCloseBtnBgd,
   sideBarCloseBtnColor,
   sideBarCloseBtnBgdHover,
   sidePanelHeaderBg,
+  sidePanelScrollBarWidth,
+  sidePanelScrollBarHeight,
 
   // Side Panel Panel
   panelActiveBg,
@@ -921,6 +984,10 @@ export const theme = {
   panelDropdownScrollBar,
 
   // Text
+  fontFamily,
+  fontWeight,
+  fontSize,
+  lineHeight,
   textColor,
   textColorLT,
   textColorHl,
@@ -932,6 +999,11 @@ export const theme = {
   titleColorLT,
   tooltipBg,
   tooltipColor,
+
+  // Bottom Panel
+  bottomInnerPdSide,
+  bottomInnerPdVert,
+  bottomPanelGap,
 
   // Slider
   sliderBarColor,
@@ -946,6 +1018,8 @@ export const theme = {
   sliderHandleShadow,
   sliderInputHeight,
   sliderInputWidth,
+  sliderMarginTopIsRange,
+  sliderMarginTop,
 
   // Plot
   rangeBrushBgd,
@@ -967,6 +1041,12 @@ export const theme = {
   gridDefaultWidth,
   gridDefaultHeight,
 
+  // time display
+  timeDisplayBorderRadius,
+  timeDisplayHeight,
+  timeDisplayMinWidth,
+  timeDisplayOpacity,
+  timeDisplayPadding,
   // Breakpoints
   breakPoints
 };

@@ -98,25 +98,33 @@ export function clamp([min, max], val) {
   return val <= min ? min : val >= max ? max : val;
 };
 
-export function getSampleData(data, sampleSize = 500) {
+export function getSampleData(data, sampleSize = 500, getValue = d => d) {
   const sampleStep = Math.max(Math.floor(data.length / sampleSize), 1);
   const output = [];
   for (let i = 0; i < data.length; i += sampleStep) {
-    output.push(data[i]);
+    output.push(getValue(data[i]));
   }
 
   return output;
 }
 
+/**
+ * Convert different time format to unix milliseconds
+ * @param {*} value
+ * @param {*} format
+ */
+export function timeToUnixMilli(value, format) {
+  if (notNullorUndefined(value)) {
+    return typeof value === 'string'
+      ? moment.utc(value, format).valueOf()
+      : format === 'x' ? value * 1000 : value;
+  }
+  return null;
+}
+
 export function maybeToDate(isTime, fieldIdx, format, d) {
   if (isTime) {
-    if (notNullorUndefined(d[fieldIdx])) {
-      return typeof d[fieldIdx] === 'string'
-        ? moment.utc(d[fieldIdx], format).valueOf()
-        : format === 'x' ? d[fieldIdx] * 1000 : d[fieldIdx];
-    }
-
-    return null;
+    return timeToUnixMilli(d[fieldIdx], format);
   }
 
   return d[fieldIdx];
@@ -242,4 +250,14 @@ export const parseFieldValue = (value, type) => {
     default:
       return value;
   }
+};
+
+const arrayMoveMutate = (array, from, to) => {
+	array.splice(to < 0 ? array.length + to : to, 0, array.splice(from, 1)[0]);
+};
+
+export const arrayMove = (array, from, to) => {
+	array = array.slice();
+	arrayMoveMutate(array, from, to);
+	return array;
 };

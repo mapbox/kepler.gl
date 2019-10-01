@@ -43,7 +43,7 @@ import {
 const SidePanelContent = styled.div`
   ${props => props.theme.sidePanelScrollBar};
   flex-grow: 1;
-  padding: 16px;
+  padding: ${props => props.theme.sidePanelInnerPadding}px;
   overflow-y: scroll;
   overflow-x: hidden;
 `;
@@ -81,7 +81,6 @@ export default function SidePanelFactory(
   InteractionManager,
   MapManager
 ) {
-
   return class SidePanel extends PureComponent {
     static propTypes = {
       filters: PropTypes.arrayOf(PropTypes.any).isRequired,
@@ -150,9 +149,10 @@ export default function SidePanelFactory(
       const layerManagerActions = {
         addLayer: visStateActions.addLayer,
         layerConfigChange: visStateActions.layerConfigChange,
+        layerColorUIChange: visStateActions.layerColorUIChange,
         layerTextLabelChange: visStateActions.layerTextLabelChange,
         layerVisualChannelConfigChange:
-        visStateActions.layerVisualChannelConfigChange,
+          visStateActions.layerVisualChannelConfigChange,
         layerTypeChange: visStateActions.layerTypeChange,
         layerVisConfigChange: visStateActions.layerVisConfigChange,
         updateLayerBlending: visStateActions.updateLayerBlending,
@@ -160,7 +160,8 @@ export default function SidePanelFactory(
         showDatasetTable: this._showDatasetTable,
         showAddDataModal: this._showAddDataModal,
         removeLayer: visStateActions.removeLayer,
-        removeDataset: this._removeDataset
+        removeDataset: this._removeDataset,
+        openModal: uiStateActions.toggleModal
       };
 
       const filterManagerActions = {
@@ -169,7 +170,7 @@ export default function SidePanelFactory(
         setFilter: visStateActions.setFilter,
         showDatasetTable: this._showDatasetTable,
         showAddDataModal: this._showAddDataModal,
-        toggleAnimation: visStateActions.toggleAnimation,
+        toggleAnimation: visStateActions.toggleFilterAnimation,
         enlargeFilter: visStateActions.enlargeFilter
       };
 
@@ -223,7 +224,7 @@ export default function SidePanelFactory(
                     layerClasses={layerClasses}
                     layerOrder={layerOrder}
                     layerBlending={layerBlending}
-                    openModal={uiStateActions.toggleModal}
+                    colorPalette={uiState.colorPalette}
                   />
                 )}
                 {activeSidePanel === 'filter' && (

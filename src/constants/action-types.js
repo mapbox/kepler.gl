@@ -81,6 +81,10 @@ const ActionTypes = keyMirror({
   UPDATE_VIS_DATA: null,
   TOGGLE_FILTER_ANIMATION: null,
   UPDATE_FILTER_ANIMATION_SPEED: null,
+  PLAY_ANIMATION: null,
+  UPDATE_ANIMATION_TIME: null,
+  UPDATE_ANIMATION_SPEED: null,
+  UPDATE_LAYER_ANIMATION_SPEED: null,
   TOGGLE_LAYER_CONFIG_ACTIVE: null,
   ENLARGE_FILTER: null,
   SET_VISIBLE_LAYERS_FOR_MAP: null,
@@ -89,6 +93,7 @@ const ActionTypes = keyMirror({
   LOAD_FILES: null,
   LOAD_FILES_ERR: null,
   LOAD_SAMPLE: null,
+  LAYER_COLOR_UI_CHANGE: null,
 
   // mapState
   UPDATE_MAP: null,

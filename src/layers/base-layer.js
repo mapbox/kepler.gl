@@ -18,14 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {hexToRgb} from 'utils/color-utils';
 import {console as Console} from 'global/window';
 import keymirror from 'keymirror';
 import DefaultLayerIcon from './default-layer-icon';
 
 import {
   ALL_FIELD_TYPES,
-  DEFAULT_LIGHT_SETTINGS,
   NO_VALUE_COLOR,
   SCALE_TYPES,
   CHANNEL_SCALES,
@@ -33,8 +31,13 @@ import {
   SCALE_FUNC,
   CHANNEL_SCALE_SUPPORTED_FIELDS
 } from 'constants/default-settings';
+import {COLOR_RANGES} from 'constants/color-ranges';
 import {DataVizColors} from 'constants/custom-color-ranges';
-import {LAYER_VIS_CONFIGS, DEFAULT_TEXT_LABEL} from './layer-factory';
+import {
+  LAYER_VIS_CONFIGS,
+  DEFAULT_TEXT_LABEL,
+  DEFAULT_COLOR_UI
+} from './layer-factory';
 
 import {generateHashId, isPlainObject} from 'utils/utils';
 
@@ -52,6 +55,11 @@ import {
   getLogDomain,
   getLinearDomain
 } from 'utils/data-scale-utils';
+import {
+  hexToRgb,
+  getColorGroupByName,
+  reverseColorRange
+} from 'utils/color-utils';
 
 /**
  * Approx. number of points to sample in a large data set
@@ -195,12 +203,12 @@ export default class Layer {
     return null;
   }
   /*
-   * Given a dataset, automatically create layers based on it
-   * and return the props
+   * Given a dataset, automatically find props to create layer based on it
+   * and return the props and previous found layers.
    * By default, no layers will be found
    */
-  static findDefaultLayerProps(fieldPairs, dataId) {
-    return null;
+  static findDefaultLayerProps(dataset, foundLayers) {
+    return {props: [], foundLayers};
   }
 
   /**
@@ -215,14 +223,15 @@ export default class Layer {
     // find all matched fields for each required col
     const requiredColumns = Object.keys(defaultFields).reduce((prev, key) => {
       const requiredFields = allFields.filter(
-        f => f.name === defaultFields[key] || defaultFields[key].includes(f.name)
+        f =>
+          f.name === defaultFields[key] || defaultFields[key].includes(f.name)
       );
 
       prev[key] = requiredFields.length
         ? requiredFields.map(f => ({
-          value: f.name,
-          fieldIdx: f.tableFieldIndex - 1
-        }))
+            value: f.name,
+            fieldIdx: f.tableFieldIndex - 1
+          }))
         : null;
       return prev;
     }, {});
@@ -301,7 +310,13 @@ export default class Layer {
 
       visConfig: {},
 
-      textLabel: [DEFAULT_TEXT_LABEL]
+      textLabel: [DEFAULT_TEXT_LABEL],
+
+      colorUI: {
+        color: DEFAULT_COLOR_UI,
+        colorRange: DEFAULT_COLOR_UI
+      },
+      animation: {enabled: false}
     };
   }
 
@@ -317,7 +332,7 @@ export default class Layer {
       measure: this.config[this.visualChannels[key].field]
         ? this.config[this.visualChannels[key].field].name
         : this.visualChannels[key].defaultMeasure
-    }
+    };
   }
 
   /**
@@ -366,7 +381,7 @@ export default class Layer {
     };
   }
 
-	/**
+  /**
    * Calculate a radius zoom multiplier to render points, so they are visible in all zoom level
    * @param mapState
    * @param mapState.zoom - actual zoom
@@ -377,7 +392,7 @@ export default class Layer {
     return Math.pow(2, Math.max(14 - zoom + zoomOffset, 0));
   }
 
-	/**
+  /**
    * Calculate a elevation zoom multiplier to render points, so they are visible in all zoom level
    * @param mapState
    * @param mapState.zoom - actual zoom
@@ -413,24 +428,32 @@ export default class Layer {
    */
   assignConfigToLayer(configToCopy, visConfigSettings) {
     // don't deep merge visualChannel field
-    const notToDeepMerge = Object.values(this.visualChannels).map(v => v.field);
-
     // don't deep merge color range, reversed: is not a key by default
-    notToDeepMerge.push('colorRange', 'strokeColorRange');
+    const shallowCopy = ['colorRange', 'strokeColorRange'].concat(
+      Object.values(this.visualChannels).map(v => v.field)
+    );
 
-    // don't copy over domain
-    const notToCopy = Object.values(this.visualChannels).map(v => v.domain);
-
+    // don't copy over domain and animation
+    const notToCopy = ['animation'].concat(
+      Object.values(this.visualChannels).map(v => v.domain)
+    );
     // if range is for the same property group copy it, otherwise, not to copy
     Object.values(this.visualChannels).forEach(v => {
-      if (configToCopy.visConfig[v.range] && visConfigSettings[v.range].group !== this.visConfigSettings[v.range].group) {
+      if (
+        configToCopy.visConfig[v.range] &&
+        visConfigSettings[v.range].group !==
+          this.visConfigSettings[v.range].group
+      ) {
         notToCopy.push(v.range);
       }
     });
 
     // don't copy over visualChannel range
     const currentConfig = this.config;
-    const copied = this.copyLayerConfig(currentConfig, configToCopy, {notToDeepMerge, notToCopy});
+    const copied = this.copyLayerConfig(currentConfig, configToCopy, {
+      shallowCopy,
+      notToCopy
+    });
 
     this.updateLayerConfig(copied);
     // validate visualChannel field type and scale types
@@ -445,21 +468,32 @@ export default class Layer {
    * make sure to only copy over value to existing keys
    * @param {object} currentConfig - existing config to be override
    * @param {object} configToCopy - new Config to copy over
-   * @param {string[]} notToDeepMerge - array of properties to not to be deep copied
+   * @param {string[]} shallowCopy - array of properties to not to be deep copied
    * @param {string[]} notToCopy - array of properties not to copy
    * @returns {object} - copied config
    */
-  copyLayerConfig(currentConfig, configToCopy, {notToDeepMerge = [], notToCopy = []} = {}) {
+  copyLayerConfig(
+    currentConfig,
+    configToCopy,
+    {shallowCopy = [], notToCopy = []} = {}
+  ) {
     const copied = {};
     Object.keys(currentConfig).forEach(key => {
       if (
         isPlainObject(currentConfig[key]) &&
         isPlainObject(configToCopy[key]) &&
-        !notToDeepMerge.includes(key) &&
+        !shallowCopy.includes(key) &&
         !notToCopy.includes(key)
       ) {
         // recursively assign object value
-        copied[key] = this.copyLayerConfig(currentConfig[key], configToCopy[key], {notToDeepMerge, notToCopy});
+        copied[key] = this.copyLayerConfig(
+          currentConfig[key],
+          configToCopy[key],
+          {
+            shallowCopy,
+            notToCopy
+          }
+        );
       } else if (
         notNullorUndefined(configToCopy[key]) &&
         !notToCopy.includes(key)
@@ -486,7 +520,9 @@ export default class Layer {
           LAYER_VIS_CONFIGS[layerVisConfigs[item]].defaultValue;
         this.visConfigSettings[item] = LAYER_VIS_CONFIGS[layerVisConfigs[item]];
       } else if (
-        ['type', 'defaultValue'].every(p => layerVisConfigs[item].hasOwnProperty(p))
+        ['type', 'defaultValue'].every(p =>
+          layerVisConfigs[item].hasOwnProperty(p)
+        )
       ) {
         // if provided customized visConfig, and has type && defaultValue
         // TODO: further check if customized visConfig is valid
@@ -524,6 +560,141 @@ export default class Layer {
     this.config.visConfig = {...this.config.visConfig, ...newVisConfig};
     return this;
   }
+
+  updateLayerColorUI(prop, newConfig) {
+    const {colorUI: previous, visConfig} = this.config;
+
+    if (!isPlainObject(newConfig) || typeof prop !== 'string') {
+      return this;
+    }
+
+    const colorUIProp = Object.entries(newConfig).reduce(
+      (accu, [key, value]) => {
+        return {
+          ...accu,
+          [key]:
+            isPlainObject(accu[key]) && isPlainObject(value)
+              ? {...accu[key], ...value}
+              : value
+        };
+      },
+      previous[prop] || DEFAULT_COLOR_UI
+    );
+
+    const colorUI = {
+      ...previous,
+      [prop]: colorUIProp
+    };
+
+    this.updateLayerConfig({colorUI});
+    // if colorUI[prop] is colorRange
+    const isColorRange = visConfig[prop] && visConfig[prop].colors;
+
+    if (isColorRange) {
+      this.updateColorUIByColorRange(newConfig, prop);
+      this.updateColorRangeByColorUI(newConfig, previous, prop);
+      this.updateCustomPalette(newConfig, previous, prop);
+    }
+
+    return this;
+  }
+
+  updateCustomPalette(newConfig, previous, prop) {
+    if (
+      !newConfig.colorRangeConfig ||
+      !newConfig.colorRangeConfig.custom
+    ) {
+      return;
+    }
+
+    const {colorUI, visConfig} = this.config;
+
+    if (!visConfig[prop]) return;
+    const {colors} = visConfig[prop];
+    const customPalette = {
+      ...colorUI[prop].customPalette,
+      name: 'Custom Palette',
+      colors: [...colors]
+    };
+    this.updateLayerConfig({
+      colorUI: {
+        ...colorUI,
+        [prop]: {
+          ...colorUI[prop],
+          customPalette
+        }
+      }
+    });
+  }
+  /**
+   * if open dropdown and prop is color range
+   * Automatically set colorRangeConfig's step and reversed
+   * @param {*} newConfig
+   * @param {*} prop
+   */
+  updateColorUIByColorRange(newConfig, prop) {
+    if (typeof newConfig.showDropdown !== 'number') return;
+
+    const {colorUI, visConfig} = this.config;
+    this.updateLayerConfig({
+      colorUI: {
+        ...colorUI,
+        [prop]: {
+          ...colorUI[prop],
+          colorRangeConfig: {
+            ...colorUI[prop].colorRangeConfig,
+            steps: visConfig[prop].colors.length,
+            reversed: Boolean(visConfig[prop].reversed)
+          }
+        }
+      }
+    });
+  }
+
+  updateColorRangeByColorUI(newConfig, previous, prop) {
+    // only update colorRange if changes in UI is made to 'reversed', 'steps' or steps
+    const shouldUpdate =
+      newConfig.colorRangeConfig &&
+      ['reversed', 'steps'].some(
+        key =>
+          newConfig.colorRangeConfig.hasOwnProperty(key) &&
+          newConfig.colorRangeConfig[key] !==
+          (previous[prop] || DEFAULT_COLOR_UI).colorRangeConfig[key]
+      );
+    if (!shouldUpdate) return;
+
+    const {colorUI, visConfig} = this.config;
+    const {steps, reversed} = colorUI[prop].colorRangeConfig;
+    const colorRange = visConfig[prop];
+    // find based on step or reversed
+    let update;
+    if (newConfig.colorRangeConfig.hasOwnProperty('steps')) {
+      const group = getColorGroupByName(colorRange);
+
+      if (group) {
+        const sameGroup = COLOR_RANGES.filter(
+          cr => getColorGroupByName(cr) === group
+        );
+
+        update = sameGroup.find(
+          cr => cr.colors.length === steps
+        );
+
+        if (update && colorRange.reversed) {
+          update = reverseColorRange(true, update);
+        }
+      }
+    }
+
+    if (newConfig.colorRangeConfig.hasOwnProperty('reversed')) {
+      update = reverseColorRange(reversed, update || colorRange);
+    };
+
+    if (update) {
+      this.updateLayerVisConfig({[prop]: update});
+    }
+  }
+
   /**
    * Check whether layer has all columns
    *
@@ -592,20 +763,6 @@ export default class Layer {
     }
 
     return [lngBounds[0], latBounds[0], lngBounds[1], latBounds[1]];
-  }
-
-  getLightSettingsFromBounds(bounds) {
-    return Array.isArray(bounds) && bounds.length >= 4
-      ? {
-          ...DEFAULT_LIGHT_SETTINGS,
-          lightsPosition: [
-            ...bounds.slice(0, 2),
-            DEFAULT_LIGHT_SETTINGS.lightsPosition[2],
-            ...bounds.slice(2, 4),
-            DEFAULT_LIGHT_SETTINGS.lightsPosition[5]
-          ]
-        }
-      : DEFAULT_LIGHT_SETTINGS;
   }
 
   getEncodedChannelValue(
@@ -685,7 +842,8 @@ export default class Layer {
 
     if (this.config[field]) {
       // if field is selected, check if field type is supported
-      const channelSupportedFieldTypes = supportedFieldTypes || CHANNEL_SCALE_SUPPORTED_FIELDS[channelScaleType];
+      const channelSupportedFieldTypes =
+        supportedFieldTypes || CHANNEL_SCALE_SUPPORTED_FIELDS[channelScaleType];
 
       if (!channelSupportedFieldTypes.includes(this.config[field].type)) {
         // field type is not supported, set it back to null
@@ -722,18 +880,16 @@ export default class Layer {
     const visualChannel = this.visualChannels[channel];
     const {field, scale, channelScaleType} = visualChannel;
 
-    return this.config[field] ?
-      FIELD_OPTS[this.config[field].type].scale[channelScaleType] :
-      [this.getDefaultLayerConfig()[scale]];
+    return this.config[field]
+      ? FIELD_OPTS[this.config[field].type].scale[channelScaleType]
+      : [this.getDefaultLayerConfig()[scale]];
   }
 
   updateLayerVisualChannel(dataset, channel) {
     const visualChannel = this.visualChannels[channel];
-
     this.validateVisualChannel(channel);
-      // calculate layer channel domain
+    // calculate layer channel domain
     const updatedDomain = this.calculateLayerDomain(dataset, visualChannel);
-
     this.updateLayerConfig({[visualChannel.domain]: updatedDomain});
   }
 
@@ -775,7 +931,11 @@ export default class Layer {
         return getOrdinalDomain(allData, valueAccessor);
 
       case SCALE_TYPES.quantile:
-        return getQuantileDomain(filteredIndexForDomain, indexValueAccessor, sortFunction);
+        return getQuantileDomain(
+          filteredIndexForDomain,
+          indexValueAccessor,
+          sortFunction
+        );
 
       case SCALE_TYPES.log:
         return getLogDomain(filteredIndexForDomain, indexValueAccessor);
