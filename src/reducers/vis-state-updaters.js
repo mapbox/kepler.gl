@@ -31,7 +31,7 @@ import {addDataToMap} from 'actions';
 
 // Utils
 import {
-  getDefaultInteraction, 
+  getDefaultInteraction,
   findFieldsToShow
 } from 'utils/interaction-utils';
 import {
@@ -185,7 +185,7 @@ function updateStateWithLayerAndData(state, {layerData, layer, idx}) {
   };
 }
 
-/**
+ /**
   * Update layer base config: dataId, label, column, isVisible
   * @memberof visStateUpdaters
   * @param {Object} state `visState`
@@ -214,8 +214,8 @@ export function layerConfigChangeUpdater(state, action) {
   if ('isVisible' in action.newConfig && state.splitMaps.length) {
     newState = {
       ...state,
-      splitMaps: action.newConfig.isVisible ? 
-        addNewLayersToSplitMap(state.splitMaps, newLayer) : 
+      splitMaps: action.newConfig.isVisible ?
+        addNewLayersToSplitMap(state.splitMaps, newLayer) :
         removeLayerFromSplitMaps(state.splitMaps, newLayer)
     };
   }
@@ -229,7 +229,8 @@ function addOrRemoveTextLabels(newFields, textLabel) {
   const currentFields = textLabel.map(tl => tl.field && tl.field.name).filter(d => d);
 
   const addFields = newFields.filter(f => !currentFields.includes(f.name));
-  const deleteFields = currentFields.filter(f => !newFields.find(fd => fd.name === f));
+  const deleteFields = currentFields
+    .filter(f => !newFields.find(fd => fd.name === f));
 
   // delete
   newTextLabel = newTextLabel.filter(tl => tl.field && !deleteFields.includes(tl.field.name));
@@ -254,7 +255,7 @@ function updateTextLabelPropAndValue(idx, prop, value, textLabel) {
     newTextLabel = textLabel.map((tl, i) =>
       i === idx ? {...tl, [prop]: value} : tl);
   } else if (prop === 'field' && value === null && textLabel.length > 1) {
-    
+
     // remove label when field value is set to null
     newTextLabel.splice(idx, 1);
   }
@@ -275,7 +276,7 @@ export function layerTextLabelChangeUpdater(state, action) {
   // if idx is set to length, add empty text label
   if (!textLabel[idx] && idx === textLabel.length) {
     newTextLabel = [
-      ...textLabel, 
+      ...textLabel,
       DEFAULT_TEXT_LABEL
     ];
   }
@@ -605,7 +606,8 @@ export const addFilterUpdater = (state, action) =>
 export const toggleFilterAnimationUpdater = (state, action) => ({
   ...state,
   filters: state.filters.map(
-    (f, i) => (i === action.idx ? {...f, isAnimating: !f.isAnimating} : f))
+    (f, i) => (i === action.idx ? {...f, isAnimating: !f.isAnimating} : f)
+  )
 });
 
 /**
@@ -935,9 +937,9 @@ export const layerClickUpdater = (state, action) => ({
  */
 export const mapClickUpdater = (state) => {
   return {
-    ...state,
-    clicked: null
-  };
+  ...state,
+  clicked: null
+  }
 };
 
 export const mouseMoveUpdater = (state, {evt}) => {
@@ -1150,7 +1152,7 @@ export const loadFilesUpdater = (state, action) => {
   const {files} = action;
 
   const filesToLoad = files.map(fileBlob => processFileToLoad(fileBlob));
-  
+
   // reader -> parser -> augment -> receiveVisData
   const loadFileTasks = [
     Task.all(filesToLoad.map(LOAD_FILE_TASK)).bimap(

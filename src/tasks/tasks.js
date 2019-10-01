@@ -70,7 +70,7 @@ export const LOAD_MAP_STYLE_TASK = taskCreator(
         if (!result) {
           error(new Error('Map style response is empty'));
         }
-        success({id, style: result});
+        success({id, style: result})
       }
     }),
 

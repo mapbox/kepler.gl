@@ -364,7 +364,7 @@ function mapStateToProps(state, props) {
 }
 
 const defaultUserActions = {};
-const getDispatch = (dispatch) => dispatch;
+const getDispatch = (dispatch) => dispatch
 const getUserActions = (dispatch, props) => props.actions || defaultUserActions;
 
 function makeGetActionCreators() {
