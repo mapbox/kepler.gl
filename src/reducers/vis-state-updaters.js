@@ -30,7 +30,10 @@ import {loadFilesErr} from 'actions/vis-state-actions';
 import {addDataToMap} from 'actions';
 
 // Utils
-import {getDefaultInteraction, findFieldsToShow} from 'utils/interaction-utils';
+import {
+  getDefaultInteraction, 
+  findFieldsToShow
+} from 'utils/interaction-utils';
 import {
   getDefaultFilter,
   getFilterProps,
@@ -183,14 +186,14 @@ function updateStateWithLayerAndData(state, {layerData, layer, idx}) {
 }
 
 /**
- * Update layer base config: dataId, label, column, isVisible
- * @memberof visStateUpdaters
- * @param {Object} state `visState`
- * @param {Object} action action
- * @param {Object} action.oldLayer layer to be updated
- * @param {Object} action.newConfig new config
- * @returns {Object} nextState
- */
+  * Update layer base config: dataId, label, column, isVisible
+  * @memberof visStateUpdaters
+  * @param {Object} state `visState`
+  * @param {Object} action action
+  * @param {Object} action.oldLayer layer to be updated
+  * @param {Object} action.newConfig new config
+  * @returns {Object} nextState
+  */
 export function layerConfigChangeUpdater(state, action) {
   const {oldLayer} = action;
   const idx = state.layers.findIndex(l => l.id === oldLayer.id);
@@ -211,9 +214,9 @@ export function layerConfigChangeUpdater(state, action) {
   if ('isVisible' in action.newConfig && state.splitMaps.length) {
     newState = {
       ...state,
-      splitMaps: action.newConfig.isVisible
-        ? addNewLayersToSplitMap(state.splitMaps, newLayer)
-        : removeLayerFromSplitMaps(state.splitMaps, newLayer)
+      splitMaps: action.newConfig.isVisible ? 
+        addNewLayersToSplitMap(state.splitMaps, newLayer) : 
+        removeLayerFromSplitMaps(state.splitMaps, newLayer)
     };
   }
 
@@ -223,24 +226,18 @@ export function layerConfigChangeUpdater(state, action) {
 function addOrRemoveTextLabels(newFields, textLabel) {
   let newTextLabel = textLabel.slice();
 
-  const currentFields = textLabel
-    .map(tl => tl.field && tl.field.name)
-    .filter(d => d);
+  const currentFields = textLabel.map(tl => tl.field && tl.field.name).filter(d => d);
 
   const addFields = newFields.filter(f => !currentFields.includes(f.name));
-  const deleteFields = currentFields.filter(
-    f => !newFields.find(fd => fd.name === f)
-  );
+  const deleteFields = currentFields.filter(f => !newFields.find(fd => fd.name === f));
 
   // delete
-  newTextLabel = newTextLabel.filter(
-    tl => tl.field && !deleteFields.includes(tl.field.name)
-  );
+  newTextLabel = newTextLabel.filter(tl => tl.field && !deleteFields.includes(tl.field.name));
   newTextLabel = !newTextLabel.length ? [DEFAULT_TEXT_LABEL] : newTextLabel;
 
   // add
   newTextLabel = [
-    ...newTextLabel.filter(tl => tl.field),
+    ...(newTextLabel.filter(tl => tl.field)),
     ...addFields.map(af => ({
       ...DEFAULT_TEXT_LABEL,
       field: af
@@ -255,9 +252,9 @@ function updateTextLabelPropAndValue(idx, prop, value, textLabel) {
 
   if (prop && (value || textLabel.length === 1)) {
     newTextLabel = textLabel.map((tl, i) =>
-      i === idx ? {...tl, [prop]: value} : tl
-    );
+      i === idx ? {...tl, [prop]: value} : tl);
   } else if (prop === 'field' && value === null && textLabel.length > 1) {
+    
     // remove label when field value is set to null
     newTextLabel.splice(idx, 1);
   }
@@ -277,16 +274,16 @@ export function layerTextLabelChangeUpdater(state, action) {
 
   // if idx is set to length, add empty text label
   if (!textLabel[idx] && idx === textLabel.length) {
-    newTextLabel = [...textLabel, DEFAULT_TEXT_LABEL];
+    newTextLabel = [
+      ...textLabel, 
+      DEFAULT_TEXT_LABEL
+    ];
   }
 
   // update text label prop and value
   newTextLabel = updateTextLabelPropAndValue(idx, prop, value, newTextLabel);
 
-  return layerConfigChangeUpdater(state, {
-    oldLayer,
-    newConfig: {textLabel: newTextLabel}
-  });
+  return layerConfigChangeUpdater(state, {oldLayer, newConfig: {textLabel: newTextLabel}});
 }
 
 /**
@@ -331,15 +328,13 @@ export function layerTypeChangeUpdater(state, action) {
       ...state,
       splitMaps: state.splitMaps.map(settings => {
         const {[oldId]: oldLayerMap, ...otherLayers} = settings.layers;
-        return oldId in settings.layers
-          ? {
-              ...settings,
-              layers: {
-                ...otherLayers,
-                [layer.id]: oldLayerMap
-              }
-            }
-          : settings;
+        return oldId in settings.layers ? {
+          ...settings,
+          layers: {
+            ...otherLayers,
+            [layer.id]: oldLayerMap
+          }
+        } : settings;
       })
     };
   }
@@ -434,11 +429,7 @@ export function interactionConfigChangeUpdater(state, action) {
   // but coordinates can be shown at all time
   const contradict = ['brush', 'tooltip'];
 
-  if (
-    contradict.includes(config.id) &&
-    config.enabled &&
-    !state.interactionConfig[config.id].enabled
-  ) {
+  if (contradict.includes(config.id) && config.enabled && !state.interactionConfig[config.id].enabled) {
     // only enable one interaction at a time
     contradict.forEach(k => {
       if (k !== config.id) {
@@ -613,9 +604,8 @@ export const addFilterUpdater = (state, action) =>
  */
 export const toggleFilterAnimationUpdater = (state, action) => ({
   ...state,
-  filters: state.filters.map((f, i) =>
-    i === action.idx ? {...f, isAnimating: !f.isAnimating} : f
-  )
+  filters: state.filters.map(
+    (f, i) => (i === action.idx ? {...f, isAnimating: !f.isAnimating} : f))
 });
 
 /**
@@ -630,8 +620,8 @@ export const toggleFilterAnimationUpdater = (state, action) => ({
  */
 export const updateAnimationSpeedUpdater = (state, action) => ({
   ...state,
-  filters: state.filters.map((f, i) =>
-    i === action.idx ? {...f, speed: action.speed} : f
+  filters: state.filters.map(
+    (f, i) => (i === action.idx ? {...f, speed: action.speed} : f)
   )
 });
 
@@ -861,7 +851,7 @@ export const showDatasetTableUpdater = (state, action) => {
  * @returns {Object} nextState
  * @public
  */
-export const resetMapConfigUpdater = state => ({
+export const resetMapConfigUpdater = (state) => ({
   ...INITIAL_VIS_STATE,
   ...state.initialState,
   initialState: state.initialState
@@ -878,10 +868,7 @@ export const resetMapConfigUpdater = state => ({
  * @returns {Object} nextState
  * @public
  */
-export const receiveMapConfigUpdater = (
-  state,
-  {payload: {config = {}, options = {}}}
-) => {
+export const receiveMapConfigUpdater = (state, {payload: {config = {}, options = {}}}) => {
   if (!config.visState) {
     return state;
   }
@@ -932,12 +919,10 @@ export const layerHoverUpdater = (state, action) => ({
  */
 export const layerClickUpdater = (state, action) => ({
   ...state,
-  mousePos: state.interactionConfig.coordinate.enabled
-    ? {
-        ...state.mousePos,
-        pinned: state.mousePos.pinned ? null : cloneDeep(state.mousePos)
-      }
-    : state.mousePos,
+  mousePos: state.interactionConfig.coordinate.enabled ? {
+    ...state.mousePos,
+    pinned: state.mousePos.pinned ? null : cloneDeep(state.mousePos)
+  } : state.mousePos,
   clicked: action.info && action.info.picked ? action.info : null
 });
 
@@ -948,7 +933,7 @@ export const layerClickUpdater = (state, action) => ({
  * @returns {Object} nextState
  * @public
  */
-export const mapClickUpdater = state => {
+export const mapClickUpdater = (state) => {
   return {
     ...state,
     clicked: null
@@ -956,6 +941,7 @@ export const mapClickUpdater = state => {
 };
 
 export const mouseMoveUpdater = (state, {evt}) => {
+
   if (Object.values(state.interactionConfig).some(config => config.enabled)) {
     return {
       ...state,
@@ -968,7 +954,7 @@ export const mouseMoveUpdater = (state, {evt}) => {
   }
 
   return state;
-};
+}
 /**
  * Toggle visibility of a layer for a split map
  * @memberof visStateUpdaters
@@ -1003,18 +989,14 @@ export const toggleLayerForMapUpdater = (state, {mapIndex, layerId}) => {
 
   return {
     ...state,
-    splitMaps: splitMaps.map((sm, i) =>
-      i === mapIndex
-        ? {
-            ...splitMaps[i],
-            layers: {
-              ...splitMaps[i].layers,
-              // if layerId not in layers, set it to visible
-              [layerId]: !splitMaps[i].layers[layerId]
-            }
-          }
-        : sm
-    )
+    splitMaps: splitMaps.map((sm, i) => i === mapIndex ? {
+      ...splitMaps[i],
+      layers: {
+        ...splitMaps[i].layers,
+        // if layerId not in layers, set it to visible
+        [layerId]: !splitMaps[i].layers[layerId]
+      }
+    } : sm)
   };
 };
 
@@ -1059,11 +1041,9 @@ export const updateVisDataUpdater = (state, action) => {
   }
 
   // apply config if passed from action
-  const previousState = config
-    ? receiveMapConfigUpdater(state, {
-        payload: {config, options}
-      })
-    : state;
+  const previousState = config ? receiveMapConfigUpdater(state, {
+    payload: {config, options}
+  }) : state;
 
   const stateWithNewData = {
     ...previousState,
@@ -1142,12 +1122,11 @@ function closeSpecificMapAtIndex(state, action) {
 
   // update layer visibility
   const newLayers = layers.map(layer =>
-    !mapLayers[layer.id] && layer.config.isVisible
-      ? layer.updateLayerConfig({
-          // if layer.id is not in mapLayers, it should be inVisible
-          isVisible: false
-        })
-      : layer
+    !mapLayers[layer.id] && layer.config.isVisible ?
+      layer.updateLayerConfig({
+        // if layer.id is not in mapLayers, it should be inVisible
+        isVisible: false
+      }) : layer
   );
 
   // delete map
@@ -1171,6 +1150,7 @@ export const loadFilesUpdater = (state, action) => {
   const {files} = action;
 
   const filesToLoad = files.map(fileBlob => processFileToLoad(fileBlob));
+  
   // reader -> parser -> augment -> receiveVisData
   const loadFileTasks = [
     Task.all(filesToLoad.map(LOAD_FILE_TASK)).bimap(

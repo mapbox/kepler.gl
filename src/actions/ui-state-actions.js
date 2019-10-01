@@ -46,7 +46,7 @@ export const toggleSidePanel = createAction(
  * @public
  */
 export const toggleModal = createAction(
-  ActionTypes.TOGGLE_MODAL, 
+  ActionTypes.TOGGLE_MODAL,
   id => id
 );
 
@@ -121,7 +121,7 @@ export const removeNotification = createAction(
  * @public
  */
 export const setRatio = createAction(
-  ActionTypes.SET_RATIO, 
+  ActionTypes.SET_RATIO,
   ratio => ratio
 );
 
