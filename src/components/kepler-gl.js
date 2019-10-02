@@ -200,6 +200,7 @@ function KeplerGlFactory(
         mapboxApiAccessToken,
         mapboxApiUrl,
         getMapboxRef,
+        dataSamples,
 
         // redux state
         mapStyle,
@@ -359,6 +360,7 @@ function KeplerGlFactory(
               rootNode={this.root.current}
               containerW={containerW}
               containerH={mapState.height}
+              dataSamples={dataSamples}
             />
           </GlobalStyle>
         </ThemeProvider>

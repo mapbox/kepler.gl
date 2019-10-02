@@ -110,7 +110,8 @@ export default function ModalContainerFactory(
       visState: PropTypes.object.isRequired,
       visStateActions: PropTypes.object.isRequired,
       uiStateActions: PropTypes.object.isRequired,
-      mapStyleActions: PropTypes.object.isRequired
+      mapStyleActions: PropTypes.object.isRequired,
+      dataSamples: PropTypes.arrayOf(PropTypes.object)
     };
 
     _closeModal = () => {
@@ -129,6 +130,10 @@ export default function ModalContainerFactory(
 
     _onFileUpload = blob => {
       this.props.visStateActions.loadFiles(blob);
+    };
+
+    _onSampleLoad = sample => {
+      this.props.visStateActions.loadSample(sample);
     };
 
     _onExportImage = () => {
@@ -237,7 +242,8 @@ export default function ModalContainerFactory(
         uiState,
         visState,
         rootNode,
-        visStateActions
+        visStateActions,
+        dataSamples
       } = this.props;
       const {currentModal, datasetKeyToRemove} = uiState;
       const {datasets, layers, editingDataset} = visState;
@@ -302,6 +308,8 @@ export default function ModalContainerFactory(
               <LoadDataModal
                 onClose={this._closeModal}
                 onFileUpload={this._onFileUpload}
+                dataSamples={dataSamples}
+                onSampleSelect={this._onSampleLoad}
               />
             );
             modalProps = {

@@ -45,6 +45,22 @@ export const LOAD_FILE_TASK = taskCreator(
   'LOAD_FILE_TASK'
 );
 
+export const LOAD_SAMPLE_FULL_DATA_TASK = taskCreator(
+  ({fullUrl, id}, success, error) =>
+    requestJson(fullUrl, (err, result) => {
+      if (err) {
+        error(err);
+      } else {
+        if (!result) {
+          error(new Error('Map config response is empty'));
+        }
+        success({id, result})
+      }
+    }),
+
+  'LOAD_SAMPLE_FULL_DATA_TASK'
+);
+
 export const LOAD_MAP_STYLE_TASK = taskCreator(
   ({url, id}, success, error) =>
     requestJson(url, (err, result) => {

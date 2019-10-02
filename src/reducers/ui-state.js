@@ -50,11 +50,12 @@ const actionHandler = {
   [ActionTypes.SET_EXPORT_DATA]: uiStateUpdaters.setExportDataUpdater,
   [ActionTypes.SET_USER_MAPBOX_ACCESS_TOKEN]: uiStateUpdaters.setUserMapboxAccessTokenUpdater,
   [ActionTypes.SET_EXPORT_MAP_FORMAT]: uiStateUpdaters.setExportMapFormat,
-  [ActionTypes.SET_EXPORT_MAP_HTML_MODE]: uiStateUpdaters.setExportMapHTMLMode
+  [ActionTypes.SET_EXPORT_MAP_HTML_MODE]: uiStateUpdaters.setExportMapHTMLMode,
+  [ActionTypes.LOAD_MAP_SAMPLE_FILE]: uiStateUpdaters.loadMapSampleFile
 };
 
 /* Reducer */
-export const uiStateReducerFactory = (initialState = {}) =>
+export const uiStateReducerFactory = (initialState = {}) => 
   handleActions(actionHandler, {...uiStateUpdaters.INITIAL_UI_STATE, ...initialState, initialState});
 
 export default uiStateReducerFactory();

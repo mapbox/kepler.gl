@@ -252,6 +252,11 @@ export const setExportHTMLMapMode = createAction(
   payload => payload
 );
 
+export const loadMapSampleFile = createAction(
+  ActionTypes.LOAD_MAP_SAMPLE_FILE,
+  samples => samples
+);
+
 /**
  * This declaration is needed to group actions in docs
  */

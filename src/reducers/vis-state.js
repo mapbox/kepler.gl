@@ -53,6 +53,8 @@ const actionHandler = {
 
   [ActionTypes.LOAD_FILES]: visStateUpdaters.loadFilesUpdater,
 
+  [ActionTypes.LOAD_SAMPLE]: visStateUpdaters.loadSampleUpdater,
+
   [ActionTypes.LOAD_FILES_ERR]: visStateUpdaters.loadFilesErrUpdater,
 
   [ActionTypes.MAP_CLICK]: visStateUpdaters.mapClickUpdater,
